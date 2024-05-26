@@ -12,7 +12,8 @@ import java.nio.file.Paths;
 @Service
 public class HomeService {
 
-    private final String path =Paths.get("", "media").toString();
+    @Value("${sms.media.path}")
+    private String path;
     public Resource getMedia(String filename){
         try {
             Path file = Paths.get(path).resolve(filename);

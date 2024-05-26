@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,12 +20,15 @@ import java.util.Optional;
 
 @Service
 public class StudentService {
-    private final StudentRepo studentRepo;
     @Autowired
+    private final StudentRepo studentRepo;
+
     public StudentService(StudentRepo studentRepo){
         this.studentRepo= studentRepo;
     }
-    private final String mediaDir = Paths.get("", "media").toString();
+
+    @Value("${sms.media.path}")
+    private String mediaDir;
     @Value("${sms.base.url}")
     private String baseUrl;
 
@@ -80,7 +84,6 @@ public class StudentService {
             // Generate a unique file name with the same extension
             String generatedFileName = "stud_"+id.toString() + fileExtension;
             // Ensure the media directory exists
-
             Path mediaPath = Paths.get(mediaDir);
             if (!Files.exists(mediaPath)) {
                 Files.createDirectories(mediaPath);
