@@ -90,6 +90,9 @@ public class StudentService {
             }
             // Create the file path
             Path filePath = mediaPath.resolve(generatedFileName);
+            if(filePath.toFile().exists()){
+                filePath.toFile().delete();
+;            }
             photo.transferTo(filePath.toFile());
             // Generate the new photo URL
             String newPhotoUrl = baseUrl + "/media/" + generatedFileName;
