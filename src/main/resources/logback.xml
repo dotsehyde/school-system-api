@@ -1,0 +1,46 @@
+<configuration>
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+<!--    Normal FileAppender-->
+<!--    <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">-->
+<!--        <file>-->
+<!--            logs/general.log-->
+<!--        </file>-->
+<!--        <encoder>-->
+<!--            <pattern>-->
+<!--                %d{yyy-MM-dd HH:mm} [%thread] %-5level %logger{36} - %msg%n-->
+<!--            </pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+<!--    Rolling Policy-->
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Current log file -->
+        <file>logs/general.log</file>
+
+        <!-- Rolling policy configuration -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Log file name pattern -->
+            <fileNamePattern>logs/general-%d{yyyy-MMM-dd}.%i.log</fileNamePattern>
+
+            <!-- Maximum size of each log file -->
+            <maxFileSize>10MB</maxFileSize>
+
+            <!-- Maximum number of log files to retain -->
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+
+        <!-- Log message format -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="fileAppender"/>
+    </root>
+</configuration>
