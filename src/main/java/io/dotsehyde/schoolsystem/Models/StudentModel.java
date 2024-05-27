@@ -1,13 +1,12 @@
 package io.dotsehyde.schoolsystem.Models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
+import lombok.Builder;
 
 @Entity
+@Builder
 public class StudentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,20 +21,17 @@ public class StudentModel {
     private String photoUrl;
     @OneToOne
     private ClassModel classRoom;
-    @OneToMany(targetEntity = SubjectModel.class)
-    private List<SubjectModel> subjects;
 
     public StudentModel() {
     }
 
-    public StudentModel(Long id, String firstName, String lastName, String address, String photoUrl, ClassModel classRoom, List<SubjectModel> subjects) {
+    public StudentModel(Long id, String firstName, String lastName, String address, String photoUrl, ClassModel classRoom) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.photoUrl = photoUrl;
         this.classRoom = classRoom;
-        this.subjects = subjects;
     }
 
     public Long getId() {
@@ -86,11 +82,5 @@ public class StudentModel {
         this.classRoom = classRoom;
     }
 
-    public List<SubjectModel> getSubjects() {
-        return subjects;
-    }
 
-    public void setSubjects(List<SubjectModel> subjects) {
-        this.subjects = subjects;
-    }
 }

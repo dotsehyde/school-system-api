@@ -17,8 +17,8 @@ public class ClassModel {
     private int size;
     @OneToOne
     private TeacherModel teacher;
-    @OneToMany(targetEntity = StudentModel.class)
-    private List<StudentModel> students;
+    @OneToMany(targetEntity = SubjectModel.class)
+    private List<SubjectModel> subjects;
 
     public Long getId() {
         return id;
@@ -52,11 +52,11 @@ public class ClassModel {
         this.teacher = teacher;
     }
 
-    public List<StudentModel> getStudents() {
-        return students;
+    public List<SubjectModel> getSubjects() {
+        return subjects;
     }
 
-    public void setStudents(List<StudentModel> students) {
-        this.students = students;
+    public void setSubjects(List<SubjectModel> subjects) {
+        this.subjects = subjects;
     }
 }
