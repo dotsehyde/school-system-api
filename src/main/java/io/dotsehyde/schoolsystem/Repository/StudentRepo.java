@@ -30,7 +30,7 @@ public interface StudentRepo extends JpaRepository<StudentModel,Long> {
     @Transactional
     @Modifying
     @Query("UPDATE StudentModel s SET s.classRoom=?1 WHERE s.id=?2")
-    int assignClass(ClassModel classRoom,Long id);
+    void assignClass(ClassModel classRoom,Long id);
 
     @Query("SELECT s from StudentModel s WHERE lower(s.firstName) LIKE lower(concat('%',:searchTerm,'%')) OR " +
             "lower(s.lastName) like lower(concat('%',:searchTerm,'%')) or" +
