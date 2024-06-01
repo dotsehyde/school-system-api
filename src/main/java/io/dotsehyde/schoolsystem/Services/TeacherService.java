@@ -16,7 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,6 +41,8 @@ public class TeacherService {
     @Value("${sms.media.path}")
     private String mediaPath;
 
+    @Value("${sms.base.url}")
+private String baseUrl;
     //create teacher
     public TeacherModel createTeacher(TeacherRecord.TeacherCreateParam teacher){
         ClassModel classRoom = null;
@@ -86,5 +94,38 @@ public class TeacherService {
     public GenericResponse deleteTeacher(Long id) {
         teacherRepo.deleteById(id);
         return GenericResponse.builder().message("Teacher deleted successfully").build();
+    }
+
+    public TeacherModel uploadPhoto(MultipartFile file,Long id ) {
+        try {
+            var teacher = teacherRepo.findById(id).orElseThrow(()-> new AppException(404,"Teacher with ID "+id+" does not exist"));
+            if (file.getSize() > 2_000_000) throw new AppException(400, "File is too large. Must be less than 2MB");
+            if (!Objects.requireNonNull(file.getContentType()).contains("image"))
+                throw new AppException(400, "The file is not an image file");
+            String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+
+            String genFileName = "tea_" + id + fileExtension;
+            Path mediaDir = Paths.get(mediaPath);
+            if (Files.exists(mediaDir)) {
+                Files.createDirectories(mediaDir);
+            }
+            if(teacher.getPhotoUrl() != null){
+                Path oldFilePath = Paths.get(mediaPath).resolve(teacher.getPhotoUrl().split("media")[1].substring(1));
+                Files.deleteIfExists(oldFilePath);
+            }
+            Path filePath = mediaDir.resolve(genFileName);
+            file.transferTo(filePath.toFile());
+            // Generate the new photo URL
+            String newPhotoUrl = baseUrl + "/media/" + genFileName;
+            int res = teacherRepo.updateTeacherPhotoUrl(newPhotoUrl,id);
+            if(res>0){
+                teacher.setPhotoUrl(newPhotoUrl);
+                return teacher;
+            }else{
+                throw new AppException(500, "Could not update teacher's photo");
+            }
+        }catch (Exception e){
+            throw new AppException(500,e.getMessage());
+        }
     }
 }

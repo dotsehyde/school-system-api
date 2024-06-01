@@ -122,8 +122,7 @@ public class StudentService {
 
     public StudentModel uploadStudentPhoto(MultipartFile photo,Long id) {
         try {
-            if(!studentRepo.existsById(id)) throw new AppException(404,"Student with ID "+id.toString()+" does not exist");
-            var student = studentRepo.findById(id);
+            var student = studentRepo.findById(id).orElseThrow(()-> new AppException(404,"Student with ID "+id.toString()+" does not exist"));
             if (!photo.getContentType().contains("image"))
                 throw new AppException(400, "The file is not a picture format: Please use .png, .jpeg");
             if (photo.getSize() > 2_000_000) throw new AppException(400, "Your is photo size is too large");
@@ -136,9 +135,9 @@ public class StudentService {
             if (!Files.exists(mediaPath)) {
                 Files.createDirectories(mediaPath);
             }
-            if (student.isPresent() && student.get().getPhotoUrl() != null){
+            if ( student.getPhotoUrl() != null){
               log.error("Called here!!!!");
-                Path oldFilePath = Paths.get(mediaDir).resolve(student.get().getPhotoUrl().split("media")[1].substring(1));
+                Path oldFilePath = Paths.get(mediaDir).resolve(student.getPhotoUrl().split("media")[1].substring(1));
                 Files.deleteIfExists(oldFilePath);
             }
 
@@ -148,8 +147,8 @@ public class StudentService {
             String newPhotoUrl = baseUrl + "/media/" + generatedFileName;
             int res = studentRepo.updateStudentPhoto(newPhotoUrl,id);
             if(res >0){
-                student.get().setPhotoUrl(newPhotoUrl);
-                return student.get();
+                student.setPhotoUrl(newPhotoUrl);
+                return student;
             }else{
                 throw new AppException(500,"Could not update student photo");
             }

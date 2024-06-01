@@ -4,12 +4,12 @@ import io.dotsehyde.schoolsystem.Models.TeacherModel;
 import io.dotsehyde.schoolsystem.Records.GenericResponse;
 import io.dotsehyde.schoolsystem.Records.PagedResponse;
 import io.dotsehyde.schoolsystem.Records.TeacherRecord;
-import io.dotsehyde.schoolsystem.Repository.TeacherRepo;
 import io.dotsehyde.schoolsystem.Services.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -35,6 +35,10 @@ public class TeacherController {
     }
 
     //Upload teacher photo
+    @PutMapping("/uploadPhoto/{id}")
+    public ResponseEntity<TeacherModel> uploadPhoto(@RequestParam("photo") MultipartFile file, @PathVariable Long id){
+        return ResponseEntity.ok(teacherService.uploadPhoto(file,id));
+    }
 
 
     //get all teachers
