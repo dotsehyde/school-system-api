@@ -3,6 +3,7 @@ package io.dotsehyde.schoolsystem.Models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class SubjectModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
